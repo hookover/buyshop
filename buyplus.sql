@@ -13,6 +13,7 @@ insert into setting_type values(1, 'text'); -- 文本
 insert into setting_type values(2, 'select'); -- 单选
 INSERT INTO setting_type VALUES (3, 'checkbox'); -- 多选
 insert into setting_type values(4, 'textarea'); -- 文本域
+insert into setting_type values(5, 'radio'); -- 单选
 
 
 -- 配置项分组
@@ -55,6 +56,7 @@ create table setting(
 ) charset=utf8;
 
 insert into setting values(null,'shop_title','buyplus(败家shopping)','商店名称',1,1,'',0);
-insert into setting values(null,'allow_comment','1','是否允许商品评论',2,1,'1-允许,0-不允许',0);
+insert into setting values(null,'allow_comment','1','是否允许商品评论',5,1,'1-允许,0-不允许',0);
 insert into setting values(null,'use_captcha','1,3','哪些页面使用验证码',3,2,'1-注册,2-登陆,3-商品评论',0);
-insert into setting values(null,'use_captcha','4,3','meta描述description',4, 1,'',0);
+insert into setting values(null,'use_captcha','哈哈哈哈士奇工','meta描述description',4, 1,'',0);
+insert into setting values(null,'area','1','地区',2,1,'1-中国,0-海外',0);

@@ -23,7 +23,7 @@ class SystemController extends Controller{
         // 利用模型，获取所有分组项
         $m_setting = M('Setting');
         $setting_list = $m_setting
-            ->field('s.*, gt.group_title, st.type_title')
+            ->field('s.*, gt.group_title, gt.group_key, st.type_title')
             ->alias('s')
             ->join('left join __SETTING_TYPE__ AS st ON s.type_id=st.setting_type_id')
             ->order('s.group_id, s.sort_number')
@@ -32,12 +32,29 @@ class SystemController extends Controller{
 
 //        echo '<pre>';
 //        var_dump($setting_list);
+
         $setting_group_list = [];
         foreach($setting_list as $setting){
+            $type = $setting['type_title'];
+            if($type == 'radio' || $type == 'checkbox' || $type == 'select') {
+                // [0-是, 1-否]
+                $options_format = explode(',',$setting['option_list']);
+                $options_format = array_map(function($var){
+                    return explode('-',$var);   //[[0,是],[1,否]]
+                }, $options_format);
+                $setting['option_format'] = $options_format;
+
+                if($type == 'checkbox') {
+                    $setting['value_format'] = explode(',',$setting['value']);
+                }
+            }
+
             $group_id = $setting['group_id'];
             $setting_group_list[$group_id][] = $setting;
         }
         $this->assign('setting_group_list', $setting_group_list);
+
+//        var_dump($setting_group_list);
 
         $this->display();
     }

@@ -1,24 +1,101 @@
-<volist name="group_list" id="group">
-    <if condition="$i eq 1">
-        {$group.group_title} 1
-        <else/>
-        {$group.group_title} 2
-    </if>
-</volist>
-
-<volist name="setting_group_list" id="setting_list" key="index">
-    <br/>---{$index}---<br/>
-    <volist name="setting_list" id="setting">
-        <div style="border: 1px solid #EEEEEE;padding: 2rem;margin: 2rem;">
-        setting_id: {$setting.setting_id} <br/>
-        key: {$setting.key} <br/>
-        value: {$setting.value} <br/>
-        title: {$setting.title} <br/>
-        type_id: {$setting.type_id} <br/>
-        group_id: {$setting.group_id} <br/>
-        option_list: {$setting.option_list} <br/>
-        group_title: {$setting.group_title} <br/>
-        type_title: {$setting.type_title} <br/>
+<extend name="Layout/Back"/>
+<block name="content">
+    <div id="content">
+        <div class="page-header">
+            <div class="container-fluid">
+                <div class="pull-right">
+                    <button class="btn btn-primary" title="" data-toggle="tooltip" form="form-setting" type="submit" data-original-title="保存"> <i class="fa fa-save"></i>
+                    </button>
+                    <a class="btn btn-default" title="" data-toggle="tooltip" href="http://php.kang.com/test/s/admin/index.php?route=setting/store&amp;token=8qLqiUzfLtLyiUkqAmSQizqIbLYbeUCm" data-original-title="取消"> <i class="fa fa-reply"></i>
+                    </a>
+                </div>
+                <h1>系统设置</h1>
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="http://php.kang.com/test/s/admin/index.php?route=common/dashboard&amp;token=8qLqiUzfLtLyiUkqAmSQizqIbLYbeUCm">首页</a>
+                    </li>
+                    <li>
+                        <a href="http://php.kang.com/test/s/admin/index.php?route=setting/store&amp;token=8qLqiUzfLtLyiUkqAmSQizqIbLYbeUCm">商店</a>
+                    </li>
+                    <li>
+                        <a href="http://php.kang.com/test/s/admin/index.php?route=setting/setting&amp;token=8qLqiUzfLtLyiUkqAmSQizqIbLYbeUCm">系统设置</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </volist>
-</volist>
+        <div class="container-fluid">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <i class="fa fa-pencil"></i>
+                        编辑系统设置
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <form class="form-horizontal" id="form-setting" enctype="multipart/form-data" method="post" action="">
+                        <ul class="nav nav-tabs">
+                            <!--<volist name="group_list" id="group">-->
+                                <!--<if condition="$i eq 1">-->
+                                    <!--<assign name="openthedoor" value="true"/>-->
+                                    <!--<li class="active">-->
+                                    <!--<else/>-->
+                                        <!--<assign name="openthedoor" value="false"/>-->
+                                    <!--<li>-->
+                                <!--</if>-->
+                                    <!--<a data-toggle="tab" href="#tab-{$group.setting_group_id}" aria-expanded="{$openthedoor}">{$group.group_title}</a>-->
+                                <!--</li>-->
+                            <!--</volist>-->
+                            <volist name="group_list" id="group">
+                            <li class="<if condition='$i eq 1'>active</if>">
+                            <a data-toggle="tab" href="#tab-{$group.setting_group_id}" aria-expanded="<if condition='$i eq 1'> true <else/> false </if>">{$group.group_title}</a>
+                            </li>
+                            </volist>
+                        </ul>
+                        <div class="tab-content">
+                            <volist name="setting_group_list" id="settings" key="index">
+                                <div id="tab-{$index}" class="tab-pane <if condition='$index eq 1'>active</if>">
+                                    <volist name="settings" id="setting">
+                                        <div class="form-group">
+                                            <label for="{$setting.key}" class="col-sm-2 control-label">{$setting.title}</label>
+                                            <div class="col-sm-10">
+                                                <if condition="$setting.type_title eq 'textarea'">
+                                                    <textarea class="form-control" id="{$setting.key}" placeholder="附言" rows="5" name="{$setting.key}">{$setting.value}</textarea>
+                                                <elseif condition="$setting.type_title eq 'select'" />
+                                                    <select class="form-control" id="{$setting.key}" name="{$setting.key}">
+                                                        <volist name="setting.option_format" id="option">
+                                                            <option value="{$option[0]}" <if condition="$option[0] eq $setting['value']">selected="selected"</if> >{$option[1]}</option>
+                                                        </volist>
+                                                    </select>
+                                                <elseif condition="$setting.type_title eq 'radio'"/>
+                                                    <volist name="setting.option_format" id="option">
+                                                        <label class="radio-inline">
+                                                            <input type="radio" value="{$option[0]}" name="{$setting.key}" <if condition="$option[0] eq $setting['value']">checked="checked"</if>>
+                                                            {$option[1]}
+                                                        </label>
+                                                    </volist>
+                                                <elseif condition="$setting.type_title eq 'checkbox'"/>
+                                                    <div style="height: 150px; overflow: auto;" class="well well-sm">
+                                                        <volist name="setting.option_format" id="option">
+                                                            <div class="checkbox">
+                                                                <label>
+                                                                    <input type="checkbox" <if condition="in_array($option[0], $setting['value_format'])">checked='checked'</if> value="{$option[0]}" name="{$setting.key}[]">
+                                                                    {$option[1]}
+                                                                </label>
+                                                            </div>
+                                                        </volist>
+                                                    </div>
+                                                <else/>
+                                                    <input type="text" class="form-control" id="{$setting.key}" placeholder="Meta标题" value="{$setting.value}" name="{$setting.key}">
+                                                </if>
+                                            </div>
+                                        </div>
+                                    </volist>
+                                </div>
+                            </volist>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</block>
