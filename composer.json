@@ -6,5 +6,7 @@
             "email": "688977@qq.com"
         }
     ],
-    "require": {}
+    "require": {
+        "robmorgan/phinx": "^0.6.2"
+    }
 }

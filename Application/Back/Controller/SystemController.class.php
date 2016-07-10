@@ -30,9 +30,6 @@ class SystemController extends Controller{
             ->join('left join __SETTING_GROUP__ AS gt ON s.group_id=gt.setting_group_id')
             ->select();
 
-//        echo '<pre>';
-//        var_dump($setting_list);
-
         $setting_group_list = [];
         foreach($setting_list as $setting){
             $type = $setting['type_title'];
@@ -54,8 +51,46 @@ class SystemController extends Controller{
         }
         $this->assign('setting_group_list', $setting_group_list);
 
-//        var_dump($setting_group_list);
-
         $this->display();
+    }
+    public function updateAction()
+    {
+        $setting_data = $_POST['setting'];
+        $m_setting = M('setting');
+
+        foreach($setting_data as $key=>$value){
+            $data['setting_id'] = $key;
+            if(is_array($value)) {
+                $value = implode(',', $value);
+            }
+            $data['value'] = $value;
+            $m_setting->save($data);
+        }
+
+        $this->redirect('Back/System/setting', [], 0, '恭喜，更新完成！');
+    }
+
+    public function updateOneAction()
+    {
+        if(IS_POST)
+        {
+            $data['setting_id'] = $_POST['setting_id'];
+            $data['value'] = $_POST['value'];
+            $matchs = preg_match('/\d+/',$data['setting_id']);
+
+            if($matchs > 0 && strlen($data['value']) > 0) {
+                $m_setting = M('setting');
+                $res = $m_setting->save($data);
+                if ($res !== false) {
+                    $this->ajaxReturn(['error' => 0, 'message' => 'success']);
+                } else {
+                    $this->ajaxReturn(['error' => 1, 'message' => 'error', 'detail'=>$res]);
+                }
+            } else {
+                $this->ajaxReturn(['error'=>1, 'message'=>'error']);
+            }
+        } else {
+            echo 'ALLOW POST';
+        }
     }
 }

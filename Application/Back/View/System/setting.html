@@ -32,7 +32,7 @@
                     </h3>
                 </div>
                 <div class="panel-body">
-                    <form class="form-horizontal" id="form-setting" enctype="multipart/form-data" method="post" action="">
+                    <form class="form-horizontal" id="form-setting" enctype="multipart/form-data" method="post" action="{:U('Back/System/update')}">
                         <ul class="nav nav-tabs">
                             <!--<volist name="group_list" id="group">-->
                                 <!--<if condition="$i eq 1">-->
@@ -59,9 +59,9 @@
                                             <label for="{$setting.key}" class="col-sm-2 control-label">{$setting.title}</label>
                                             <div class="col-sm-10">
                                                 <if condition="$setting.type_title eq 'textarea'">
-                                                    <textarea class="form-control" id="{$setting.key}" placeholder="附言" rows="5" name="{$setting.key}">{$setting.value}</textarea>
+                                                    <textarea class="form-control" id="{$setting.key}" placeholder="附言" rows="5" name="setting[{$setting.setting_id}]" setting_id="{$setting.setting_id}">{$setting.value}</textarea>
                                                 <elseif condition="$setting.type_title eq 'select'" />
-                                                    <select class="form-control" id="{$setting.key}" name="{$setting.key}">
+                                                    <select class="form-control" id="{$setting.key}" name="setting[{$setting.setting_id}]" setting_id="{$setting.setting_id}">
                                                         <volist name="setting.option_format" id="option">
                                                             <option value="{$option[0]}" <if condition="$option[0] eq $setting['value']">selected="selected"</if> >{$option[1]}</option>
                                                         </volist>
@@ -69,7 +69,7 @@
                                                 <elseif condition="$setting.type_title eq 'radio'"/>
                                                     <volist name="setting.option_format" id="option">
                                                         <label class="radio-inline">
-                                                            <input type="radio" value="{$option[0]}" name="{$setting.key}" <if condition="$option[0] eq $setting['value']">checked="checked"</if>>
+                                                            <input type="radio" value="{$option[0]}" name="setting[{$setting.setting_id}]" setting_id="{$setting.setting_id}" <if condition="$option[0] eq $setting['value']">checked="checked"</if>>
                                                             {$option[1]}
                                                         </label>
                                                     </volist>
@@ -78,14 +78,14 @@
                                                         <volist name="setting.option_format" id="option">
                                                             <div class="checkbox">
                                                                 <label>
-                                                                    <input type="checkbox" <if condition="in_array($option[0], $setting['value_format'])">checked='checked'</if> value="{$option[0]}" name="{$setting.key}[]">
+                                                                    <input type="checkbox" <if condition="in_array($option[0], $setting['value_format'])">checked='checked'</if> value="{$option[0]}" name="setting[{$setting.setting_id}][]" setting_id="{$setting.setting_id}">
                                                                     {$option[1]}
                                                                 </label>
                                                             </div>
                                                         </volist>
                                                     </div>
                                                 <else/>
-                                                    <input type="text" class="form-control" id="{$setting.key}" placeholder="Meta标题" value="{$setting.value}" name="{$setting.key}">
+                                                    <input type="text" class="form-control" id="{$setting.key}" placeholder="Meta标题" value="{$setting.value}" name="setting[{$setting.setting_id}]" setting_id="{$setting.setting_id}">
                                                 </if>
                                             </div>
                                         </div>
@@ -98,4 +98,36 @@
             </div>
         </div>
     </div>
+    <script>
+        $(function() {
+            $('input,select,textarea').on('change', function(){
+                var url = '{:U("Back/System/updateOne")}';
+                var data = {
+                    'setting_id': $(this).attr('setting_id'),
+                    'value': $(this).val()
+                };
+                if($(this).attr('type') == 'checkbox') {
+                    var nameStr = $(this).attr('name');
+                    var dataList = [];
+                    $('input[name="'+ nameStr +'"]:checked').each(function (i) {
+                        dataList[i] = $(this).val();
+                    });
+                    data.value = dataList.join(',');
+                }
+                $.ajax({
+                    url: url,
+                    data: data,
+                    method: 'post',
+                    success: function (data) {
+                        if(data.error != 0 ){
+                            console.warn('更新失败');
+                        } else {
+                            console.info('更新成功');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 </block>
+
