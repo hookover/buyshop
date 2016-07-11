@@ -18,6 +18,7 @@ class GoodsController extends Controller
     {
         if(IS_POST) {
             $m_goods = D('goods');
+
             if($m_goods->create()) {
                 $goods_id = $m_goods->add();
 
@@ -27,7 +28,6 @@ class GoodsController extends Controller
             }
 
             $this->error('商品添加失败：' . $m_goods->getError(), U('Back/Goods/add'), 2);
-
         } else {
             $this->assign('tax_list', M('tax')->select());
             $this->assign('stock_status_list', M('stock_status')->select());
@@ -79,6 +79,6 @@ class GoodsController extends Controller
     }
     public function listAction()
     {
-        echo 'OK';
+        echo '列表';
     }
 }

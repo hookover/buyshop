@@ -14,10 +14,10 @@ class GoodsModel extends Model
 {
     protected $_validate = [
         ['name', 'require', '商品名称必须填写！'],
-        ['upc', 'require', '商品条码必须填写'],
-        ['upc', '商品编码必须唯一', 0, 'unique', 1],
+        ['UPC', 'require', '商品条码必须填写'],
+        ['UPC', '', '该商品编码已存在', 0, 'unique', 1]
     ];
-
+    // 自动完成
     protected $_auto = [
         ['create_at', 'time', self::MODEL_INSERT, 'function'],
         ['update_at', 'time', self::MODEL_BOTH, 'function'],
