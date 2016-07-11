@@ -1,0 +1,110 @@
+<extend name="Layout/Back" />
+<block name="content">
+
+    <div id="content">
+        <div class="page-header">
+            <div class="container-fluid">
+                <div class="pull-right">
+                    <a href="{:U('Back/Category/add')}" data-toggle="tooltip" title="新增" class="btn btn-primary">
+                        <i class="fa fa-plus"></i>
+                    </a>
+                    <a href="" data-toggle="tooltip" title="重建" class="btn btn-default">
+                        <i class="fa fa-refresh"></i>
+                    </a>
+                    <button type="button" data-toggle="tooltip" title="删除" class="btn btn-danger" onclick="confirm('确认？') ? $('#form-category').submit() : false;">
+                        <i class="fa fa-trash-o"></i>
+                    </button>
+                </div>
+                <h1>商品分类</h1>
+                <ul class="breadcrumb">
+                    <li>
+                        <a href="">首页</a>
+                    </li>
+                    <li>
+                        <a href="">商品分类</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <i class="fa fa-list"></i>
+                        商品分类列表
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <form action="" method="post" enctype="multipart/form-data" id="form-category">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <td style="width: 1px;" class="text-center">
+                                        <input type="checkbox" onclick="" />
+                                    </td>
+                                    <td class="text-left">
+                                        <a href="" class="asc">分类名称</a>
+                                    </td>
+                                    <td class="text-right">
+                                        <a href="">分类顺序</a>
+                                    </td>
+                                    <td class="text-right">管理分类</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <volist name="category_list" id="category">
+                                    <tr data-deep="{$category['deep']}">
+                                        <td class="text-center">
+                                            <input type="checkbox" name="selected[]" value="{$category['category_id']}" />
+                                        </td>
+                                        <td class="text-left">
+                                            <a href="" style="margin-left: {$category['deep']*20}px" class="plus-minus"><i class="fa fa-minus"></i></a>
+                                            {$category['title']}
+                                        </td>
+                                        <td class="text-right">{$category['sort_number']}</td>
+                                        <td class="text-right">
+                                            <a href="" data-toggle="tooltip" title="编辑" class="btn btn-primary">
+                                                <i class="fa fa-pencil"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </volist>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(function () {
+             $('.plus-minus').on('click', function (e) {
+                 e.preventDefault();
+                 var self = $(this);
+                 var plusOrMinus = $(this).children('i');
+                 var flag = plusOrMinus.hasClass('fa-minus') ? 'fa-minus' : 'fa-plus';
+
+                 var currentTr = self.parent().parent();
+
+                 currentTr.nextAll('tr').each(function (i) {
+                     if(currentTr.attr('data-deep') < $(this).attr('data-deep')) {
+                         if(flag == 'fa-minus') {
+                             $(this).fadeOut();
+                             plusOrMinus.removeClass('fa-minus').addClass('fa-plus');
+                         } else {
+                             $(this).fadeIn();
+                             plusOrMinus.removeClass('fa-plus').addClass('fa-minus');
+                         }
+                     } else {
+                         return false;   //退出循环
+                     }
+                 });
+
+             });
+        });
+    </script>
+</block>

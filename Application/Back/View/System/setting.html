@@ -118,6 +118,7 @@
                     url: url,
                     data: data,
                     method: 'post',
+                    dataType: 'json',
                     success: function (data) {
                         if(data.error != 0 ){
                             console.warn('更新失败');
